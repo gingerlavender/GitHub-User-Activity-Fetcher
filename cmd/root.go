@@ -10,6 +10,7 @@ import (
 
 var period time.Duration
 var days int
+var eventType string
 
 var rootCmd = &cobra.Command{
 	Use:   "gh-api [username]",
@@ -39,7 +40,7 @@ var rootCmd = &cobra.Command{
 			fmt.Printf("Error fetching events: %s\n", err)
 			return
 		}
-		if err = output.PrintEvents(events, period); err != nil {
+		if err = output.PrintEvents(events, period, eventType); err != nil {
 			fmt.Printf("Error printing events: %s\n", err)
 			return
 		}
@@ -52,6 +53,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("month", "m", false, "Period: month")
 	rootCmd.PersistentFlags().BoolP("year", "y", false, "Period: month")
 	rootCmd.PersistentFlags().IntVar(&days, "period", 0, "Period: number of days")
+	rootCmd.PersistentFlags().StringVar(&eventType, "eventType", "", "Show only specific event (full name like \"PushEvent\")")
 	rootCmd.MarkFlagsOneRequired("day", "week", "month", "year", "period")
 	rootCmd.MarkFlagsMutuallyExclusive("day", "week", "month", "year", "period")
 }

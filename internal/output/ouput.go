@@ -143,11 +143,11 @@ func InitOutputs() {
 	}
 }
 
-func PrintEvents(eventsSlice []events.Event, period time.Duration) error {
+func PrintEvents(eventsSlice []events.Event, period time.Duration, eventType string) error {
 	InitOutputs()
 	currentTime := time.Now()
 	for _, event := range eventsSlice {
-		if currentTime.Sub(event.CreatedAt) > period {
+		if currentTime.Sub(event.CreatedAt) > period || eventType != "" && eventType != event.Type {
 			continue
 		}
 		if output, ok := outputs[event.Type]; ok {
