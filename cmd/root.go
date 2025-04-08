@@ -41,12 +41,12 @@ var rootCmd = &cobra.Command{
 			fmt.Printf("Error fetching events: %s\n", err)
 			return
 		}
-		if err = output.PrintEvents(events, period, eventType); err != nil {
+		if err = output.PrintEvents(&events, period, eventType); err != nil {
 			fmt.Printf("Error printing events: %s\n", err)
 			return
 		}
 		if drawPlot {
-			if err = output.DrawEventsPlot(events, period, eventType); err != nil {
+			if err = output.DrawEventsPlot(&events, period, eventType); err != nil {
 				fmt.Printf("Error drawing plot: %s\n", err)
 				return
 			}

@@ -148,10 +148,10 @@ func InitOutputs() {
 	}
 }
 
-func PrintEvents(eventsSlice []events.Event, period time.Duration, eventType string) error {
+func PrintEvents(eventsSlice *[]events.Event, period time.Duration, eventType string) error {
 	InitOutputs()
 	currentTime := time.Now()
-	for _, event := range eventsSlice {
+	for _, event := range *eventsSlice {
 		if currentTime.Sub(event.CreatedAt) > period || eventType != "" && eventType != event.Type {
 			continue
 		}
@@ -166,10 +166,10 @@ func PrintEvents(eventsSlice []events.Event, period time.Duration, eventType str
 	return nil
 }
 
-func GetEventsMap(eventsSlice []events.Event, period time.Duration, eventType string) map[string]map[string]int {
+func GetEventsMap(eventsSlice *[]events.Event, period time.Duration, eventType string) map[string]map[string]int {
 	eventsCount := make(map[string]map[string]int)
 	currentTime := time.Now()
-	for _, event := range eventsSlice {
+	for _, event := range *eventsSlice {
 		if currentTime.Sub(event.CreatedAt) > period || eventType != "" && eventType != event.Type {
 			continue
 		}
@@ -181,7 +181,7 @@ func GetEventsMap(eventsSlice []events.Event, period time.Duration, eventType st
 	return eventsCount
 }
 
-func DrawEventsPlot(eventsSlice []events.Event, period time.Duration, eventType string) error {
+func DrawEventsPlot(eventsSlice *[]events.Event, period time.Duration, eventType string) error {
 	var (
 		makeVisible [events.EventsAmount]bool
 		counts      [events.EventsAmount][]opts.BarData
