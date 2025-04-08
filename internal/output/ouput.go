@@ -4,6 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"gh-api/internal/events"
+	"github.com/go-echarts/go-echarts/v2/charts"
+	"github.com/go-echarts/go-echarts/v2/opts"
+	"os"
+	"slices"
+	"strings"
 	"time"
 )
 
@@ -158,5 +163,62 @@ func PrintEvents(eventsSlice []events.Event, period time.Duration, eventType str
 			return fmt.Errorf("I don't know such event type yet: %s", event.Type)
 		}
 	}
+	return nil
+}
+
+func GetEventsMap(eventsSlice []events.Event, period time.Duration, eventType string) map[string]map[string]int {
+	eventsCount := make(map[string]map[string]int)
+	currentTime := time.Now()
+	for _, event := range eventsSlice {
+		if currentTime.Sub(event.CreatedAt) > period || eventType != "" && eventType != event.Type {
+			continue
+		}
+		if _, ok := eventsCount[event.CreatedAt.Format(time.DateOnly)]; !ok {
+			eventsCount[event.CreatedAt.Format(time.DateOnly)] = make(map[string]int)
+		}
+		eventsCount[event.CreatedAt.Format(time.DateOnly)][event.Type]++
+	}
+	return eventsCount
+}
+
+func DrawEventsPlot(eventsSlice []events.Event, period time.Duration, eventType string) error {
+	var (
+		makeVisible [events.EventsAmount]bool
+		counts      [events.EventsAmount][]opts.BarData
+		eventsCount = GetEventsMap(eventsSlice, period, eventType)
+		dates       = make([]string, 0, len(eventsCount))
+	)
+	for i := range events.EventsAmount {
+		counts[i] = make([]opts.BarData, len(eventsCount))
+	}
+	for date, _ := range eventsCount {
+		dates = append(dates, date)
+	}
+	slices.SortFunc(dates, func(a, b string) int {
+		return strings.Compare(a, b)
+	})
+	for i := range dates {
+		for eventType, count := range eventsCount[dates[i]] {
+			counts[events.GetIndex(eventType)][i] = opts.BarData{Value: count}
+			makeVisible[events.GetIndex(eventType)] = true
+		}
+	}
+	bar := charts.NewBar()
+	bar.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{Title: "User Activity"}),
+		charts.WithXAxisOpts(opts.XAxis{Name: "Date"}),
+		charts.WithYAxisOpts(opts.YAxis{Name: "Events"}),
+	)
+	for i := range events.EventsAmount {
+		if makeVisible[i] {
+			bar.SetXAxis(dates).AddSeries(events.GetEventName(i), counts[i])
+		}
+	}
+	file, err := os.Create("activity_" + time.Now().Format("2006-01-02_15-04-05") + ".html")
+	if err != nil {
+		return fmt.Errorf("Error creating file for plot: %w", err)
+	}
+	defer file.Close()
+	bar.Render(file)
 	return nil
 }

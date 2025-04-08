@@ -35,6 +35,7 @@ var rootCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		drawPlot, _ := cmd.Flags().GetBool("plot")
 		events, err := events.FetchEvents(args[0])
 		if err != nil {
 			fmt.Printf("Error fetching events: %s\n", err)
@@ -44,6 +45,13 @@ var rootCmd = &cobra.Command{
 			fmt.Printf("Error printing events: %s\n", err)
 			return
 		}
+		if drawPlot {
+			if err = output.DrawEventsPlot(events, period, eventType); err != nil {
+				fmt.Printf("Error drawing plot: %s\n", err)
+				return
+			}
+			fmt.Printf("\nPlot has been successfully saved!\n")
+		}
 	},
 }
 
@@ -52,6 +60,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("week", "w", false, "Period: week")
 	rootCmd.PersistentFlags().BoolP("month", "m", false, "Period: month")
 	rootCmd.PersistentFlags().BoolP("year", "y", false, "Period: month")
+	rootCmd.PersistentFlags().Bool("plot", false, "Draw a plot of user activity (in HTML format)")
 	rootCmd.PersistentFlags().IntVar(&days, "period", 0, "Period: number of days")
 	rootCmd.PersistentFlags().StringVar(&eventType, "eventType", "", "Show only specific event (full name like \"PushEvent\")")
 	rootCmd.MarkFlagsOneRequired("day", "week", "month", "year", "period")
