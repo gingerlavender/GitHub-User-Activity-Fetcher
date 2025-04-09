@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"gh-api/internal/events"
-	"gh-api/internal/output"
+	"github.com/gingerlavender/GitHub-User-Activity-Fetcher/internal/events"
+	"github.com/gingerlavender/GitHub-User-Activity-Fetcher/internal/output"
 	"github.com/spf13/cobra"
 	"time"
 )

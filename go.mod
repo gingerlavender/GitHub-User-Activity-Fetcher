@@ -1,4 +1,4 @@
-module gh-api
+module github.com/gingerlavender/GitHub-User-Activity-Fetcher
 
 go 1.24.1
 

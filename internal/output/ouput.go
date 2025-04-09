@@ -3,7 +3,7 @@ package output
 import (
 	"encoding/json"
 	"fmt"
-	"gh-api/internal/events"
+	"github.com/gingerlavender/GitHub-User-Activity-Fetcher/internal/events"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
 	"os"

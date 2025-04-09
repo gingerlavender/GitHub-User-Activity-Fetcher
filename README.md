@@ -22,7 +22,7 @@ A tool for analyzing GitHub user activity. Collects data on events (commits, pul
     ```
 3.  **Build binary file**:
     ```bash
-    go build
+    go build -o gh-api
     ```
 
 ## 🚀 Usage

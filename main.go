@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gh-api/cmd"
+	"github.com/gingerlavender/GitHub-User-Activity-Fetcher/cmd"
 )
 
 func main() {
