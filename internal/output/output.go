@@ -191,7 +191,7 @@ func DrawEventsPlot(eventsSlice *[]events.Event, period time.Duration, eventType
 	for i := range events.EventsAmount {
 		counts[i] = make([]opts.BarData, len(eventsCount))
 	}
-	for date, _ := range eventsCount {
+	for date := range eventsCount {
 		dates = append(dates, date)
 	}
 	slices.SortFunc(dates, func(a, b string) int {
