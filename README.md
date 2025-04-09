@@ -35,3 +35,4 @@ A tool for analyzing GitHub user activity. Collects data on events (commits, pul
   |\-\-period|Specifies any other period  (requires days as int)|
   |\-\-eventType |Shows only particular event (requires event as string, specified as its full proper name, e.g. "PushEvent" or "IssuesEvent")|
   |\-\-plot  |Defines whether draw interactive chart of activity or not (if not, just omit this flag)|
+  |\-\-token (-t)|Defines your GitHub API authorization token|

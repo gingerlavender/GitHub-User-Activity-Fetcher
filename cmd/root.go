@@ -11,6 +11,7 @@ import (
 var period time.Duration
 var days int
 var eventType string
+var token string
 
 var rootCmd = &cobra.Command{
 	Use:   "gh-api [username]",
@@ -36,7 +37,7 @@ var rootCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		drawPlot, _ := cmd.Flags().GetBool("plot")
-		events, err := events.FetchEvents(args[0])
+		events, err := events.FetchEvents(args[0], token)
 		if err != nil {
 			fmt.Printf("Error fetching events: %s\n", err)
 			return
@@ -62,6 +63,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("year", "y", false, "Period: month")
 	rootCmd.PersistentFlags().Bool("plot", false, "Draw a plot of user activity (in HTML format)")
 	rootCmd.PersistentFlags().IntVar(&days, "period", 0, "Period: number of days")
+	rootCmd.PersistentFlags().StringVarP(&token, "token", "t", "", "Your API authorization token")
 	rootCmd.PersistentFlags().StringVar(&eventType, "eventType", "", "Show only specific event (full name like \"PushEvent\")")
 	rootCmd.MarkFlagsOneRequired("day", "week", "month", "year", "period")
 	rootCmd.MarkFlagsMutuallyExclusive("day", "week", "month", "year", "period")

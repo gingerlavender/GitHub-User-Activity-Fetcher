@@ -119,8 +119,16 @@ type DeleteEventPayload struct {
 	RefType string `json:"ref_type"`
 }
 
-func FetchEvents(username string) ([]Event, error) {
-	resp, err := http.Get("https://api.github.com/users/" + username + "/events")
+func FetchEvents(username string, token string) ([]Event, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "https://api.github.com/users/"+username+"/events", nil)
+	if err != nil {
+		return nil, fmt.Errorf("Unable to create request: %w", err)
+	}
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to fetch: %w", err)
 	} else if resp.StatusCode != http.StatusOK {
