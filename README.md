@@ -2,8 +2,8 @@
 
 [![Go Version](https://img.shields.io/badge/Go-1.19%2B-blue)](https://golang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/gingerlavender/GitHub-User-Activity-Fetcher?style=social)](https://github.com/gingerlavender/GitHub-User-Activity-Fetcher)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gingerlavender/GitHub-User-Activity-Fetcher)](https://goreportcard.com/report/github.com/gingerlavender/GitHub-User-Activity-Fetcher)
+[![GitHub Stars](https://img.shields.io/github/stars/gingerlavender/GitHub-User-Activity-Fetcher?style=social)](https://github.com/gingerlavender/GitHub-User-Activity-Fetcher)
 
 ## 🔍Overview
 A tool for analyzing GitHub user activity. Collects data on events (commits, pull requests, repository creation, etc.), displays statistics on them, or visualizes them in an interactive chart.
