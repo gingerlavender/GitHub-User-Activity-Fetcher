@@ -184,12 +184,14 @@ func GetEventsMap(eventsSlice *[]events.Event, period time.Duration, eventType s
 func DrawEventsPlot(eventsSlice *[]events.Event, period time.Duration, eventType string) error {
 	var (
 		makeVisible [events.EventsAmount]bool
-		counts      [events.EventsAmount][]opts.BarData
+		counts_line [events.EventsAmount][]opts.LineData
+		counts_bar  [events.EventsAmount][]opts.BarData
 		eventsCount = GetEventsMap(eventsSlice, period, eventType)
 		dates       = make([]string, 0, len(eventsCount))
 	)
 	for i := range events.EventsAmount {
-		counts[i] = make([]opts.BarData, len(eventsCount))
+		counts_line[i] = make([]opts.LineData, len(eventsCount))
+		counts_bar[i] = make([]opts.BarData, len(eventsCount))
 	}
 	for date := range eventsCount {
 		dates = append(dates, date)
@@ -199,19 +201,27 @@ func DrawEventsPlot(eventsSlice *[]events.Event, period time.Duration, eventType
 	})
 	for i := range dates {
 		for eventType, count := range eventsCount[dates[i]] {
-			counts[events.GetIndex(eventType)][i] = opts.BarData{Value: count}
+			counts_line[events.GetIndex(eventType)][i] = opts.LineData{Value: count}
+			counts_bar[events.GetIndex(eventType)][i] = opts.BarData{Value: count}
 			makeVisible[events.GetIndex(eventType)] = true
 		}
 	}
 	bar := charts.NewBar()
 	bar.SetGlobalOptions(
-		charts.WithTitleOpts(opts.Title{Title: "User Activity"}),
+		charts.WithTitleOpts(opts.Title{Title: "User Activity (Bar Diagram)"}),
+		charts.WithXAxisOpts(opts.XAxis{Name: "Date"}),
+		charts.WithYAxisOpts(opts.YAxis{Name: "Events"}),
+	)
+	line := charts.NewLine()
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{Title: "User Activity (Line Diagram)"}),
 		charts.WithXAxisOpts(opts.XAxis{Name: "Date"}),
 		charts.WithYAxisOpts(opts.YAxis{Name: "Events"}),
 	)
 	for i := range events.EventsAmount {
 		if makeVisible[i] {
-			bar.SetXAxis(dates).AddSeries(events.GetEventName(i), counts[i])
+			line.SetXAxis(dates).AddSeries(events.GetEventName(i), counts_line[i])
+			bar.SetXAxis(dates).AddSeries(events.GetEventName(i), counts_bar[i])
 		}
 	}
 	file, err := os.Create("activity_" + time.Now().Format("2006-01-02_15-04-05") + ".html")
@@ -220,5 +230,6 @@ func DrawEventsPlot(eventsSlice *[]events.Event, period time.Duration, eventType
 	}
 	defer file.Close()
 	bar.Render(file)
+	line.Render(file)
 	return nil
 }
